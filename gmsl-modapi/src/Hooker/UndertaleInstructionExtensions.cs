@@ -6,6 +6,7 @@ namespace GMSL.Hooker;
 
 public static class UndertaleInstructionExtensions {
     public static bool Match(this UndertaleInstruction left, UndertaleInstruction right) {
+        left.
         return left.Kind == right.Kind && UndertaleInstruction.GetInstructionType(left.Kind) switch {
             UndertaleInstruction.InstructionType.SingleTypeInstruction => left.MatchType(right),
             UndertaleInstruction.InstructionType.DoubleTypeInstruction => left.MatchType(right),
@@ -31,18 +32,16 @@ public static class UndertaleInstructionExtensions {
         left.Type1 == right.Type1 &&
         (left.Type1 == UndertaleInstruction.DataType.Int16 && left.SwapExtra == right.SwapExtra ||
             left.Type1 != UndertaleInstruction.DataType.Int16 && left.TypeInst == right.TypeInst &&
-            left.Destination.Type == right.Destination.Type && left.Destination.Target == right.Destination.Target);
+            left.ValueVariable.InstanceType == right.ValueVariable.InstanceType && left.ValueInt == right.ValueInt);
 
     private static bool MatchPush(this UndertaleInstruction left, UndertaleInstruction right) =>
         left.Type1 == right.Type1 && left.Type1 switch {
         UndertaleInstruction.DataType.Int32 when
-            left.Value is UndertaleInstruction.Reference<UndertaleFunction> leftRef &&
-            right.Value is UndertaleInstruction.Reference<UndertaleFunction> rightRef => leftRef.Type ==
-            rightRef.Type && leftRef.Target == rightRef.Target,
+            left.ValueFunction is UndertaleFunction leftRef &&
+            right.ValueFunction is UndertaleFunction rightRef => leftRef == rightRef,
         UndertaleInstruction.DataType.Variable when
-            left.Value is UndertaleInstruction.Reference<UndertaleVariable> leftRef &&
-            right.Value is UndertaleInstruction.Reference<UndertaleVariable> rightRef => leftRef.Type ==
-            rightRef.Type && leftRef.Target == rightRef.Target,
+            left.ValueVariable is UndertaleVariable leftRef &&
+            right.ValueVariable is UndertaleVariable rightRef => leftRef == rightRef,
         UndertaleInstruction.DataType.Variable when
             left.Value is UndertaleResourceById<UndertaleString, UndertaleChunkSTRG> leftRef &&
             right.Value is UndertaleResourceById<UndertaleString, UndertaleChunkSTRG> rightRef =>
